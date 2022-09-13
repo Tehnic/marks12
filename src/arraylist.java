@@ -1,3 +1,4 @@
+import java.net.*;
 import java.util.*;
 
 public class arraylist {
@@ -11,19 +12,18 @@ public class arraylist {
                 countryNames.add(country);
             }
         }
+        System.out.println(countryNames);
 
-        ArrayList<String> list = new ArrayList<>(5);
-        list.add("Kazakhstan");
-        list.add("Latvia");
-        list.add("Russia");
-        list.add("Ukraine");
-        list.add("Belarus");
-        System.out.println("ArrayList: " + list);
-
-        Collections.sort(list);
-        System.out.println("Sorted ArrayList: " + list);
-        System.out.println("Size of ArrayList: " + list.size());
-        for (String str : list) {
+        ArrayList<String> countryList = new ArrayList<String>();
+        ArrayList<String> population = new ArrayList<String>();
+        ArrayList<String> codesList = new ArrayList<String>();
+        ArrayList<ArrayList<String>> combinedList = new ArrayList<>(); //countryList + population
+        countryList.add("Kazakhstan");
+        countryList.add("Latvia");
+        countryList.add("Russia");
+        countryList.add("Ukraine");
+        countryList.add("Belarus");
+        for (String str : countryList) {
             System.out.println(str);
         }
 
@@ -32,10 +32,10 @@ public class arraylist {
         while (!sc.hasNext("stop")) {
             String country = sc.nextLine();
             if (countryNames.contains(country)) {
-                if (list.contains(country)) {
+                if (countryList.contains(country)) {
                     System.out.println("The country is already in the list");
                 } else {
-                    list.add(country);
+                    countryList.add(country);
                     System.out.println("The country is not in the list, added");
                 }
             } else {
@@ -43,28 +43,76 @@ public class arraylist {
             }
         }
 
-        Collections.sort(list);
-        System.out.println("Sorted ArrayList: " + list);
-        System.out.println("Size of ArrayList: " + list.size());
-        for (String str : list) {
+        for (String str : countryList) {
             System.out.println(str);
         }
 
-        ArrayList<Integer> population = new ArrayList<>();
-        Scanner sc2 = new Scanner(System.in);
-        for (int i = 0; i < list.size(); i++) {
-            System.out.println("Please enter the population for " + list.get(i));
-            population.add(sc2.nextInt());
+        for (String str : countryList) {
+            for (Locale locale : locales) {
+                String country = locale.getDisplayCountry(obj);
+                if (country.equals(str)) {
+                    codesList.add(locale.getCountry());
+                }
+            }
         }
-        sc2.close();
+        LinkedHashSet<String> lhs = new LinkedHashSet<>(codesList);
+        codesList.clear();
+        codesList.addAll(lhs);
 
-        ArrayList<ArrayList<String>> list2 = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            ArrayList<String> list3 = new ArrayList<>();
-            list3.add(list.get(i));
-            list3.add(population.get(i).toString());
-            list2.add(list3);
+        for (int i = 0; i < codesList.size(); i++) {
+            String json = "";
+            try {
+                URL url = new URL("https://jsonmock.hackerrank.com/api/countries/search?alpha2Code=" + codesList.get(i));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+                int responsecode = conn.getResponseCode();
+                if (responsecode != 200) {
+                    throw new RuntimeException("HttpResponseCode: " + responsecode);
+                } else {
+                    Scanner sc2 = new Scanner(url.openStream());
+                    while (sc2.hasNext()) {
+                        json += sc2.nextLine();
+                    }
+                    sc2.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String[] jsonSplit = json.split("population");
+
+            for (int j = 1; j < jsonSplit.length; j++) {
+                String[] jsonSplit2 = jsonSplit[j].split(",");
+                population.add(jsonSplit2[0].substring(2));
+            }
         }
-        System.out.println(list2);
+
+        for (int i = 0; i < countryList.size(); i++) {
+            ArrayList<String> list2 = new ArrayList<String>();
+            list2.add(countryList.get(i));
+            list2.add(population.get(i));
+            combinedList.add(list2);
+        }
+
+        System.out.println("Choose how to sort the list: 1 - by country name, 2 - by population");
+        Scanner sc3 = new Scanner(System.in);
+        int choice = sc3.nextInt();
+        sc3.close();
+        if (choice == 1) {
+            Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
+                public int compare(ArrayList<String> o1, ArrayList<String> o2) {
+                    return o1.get(0).compareTo(o2.get(0));
+                }
+            });
+        } else if (choice == 2) {
+            Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
+                public int compare(ArrayList<String> o1, ArrayList<String> o2) {
+                    return Integer.valueOf(o1.get(1)).compareTo(Integer.valueOf(o2.get(1)));
+                }
+            });
+        } else {
+            System.out.println("Please enter a valid choice!");
+        }
+        System.out.println(combinedList);
     }
 }
