@@ -2,21 +2,16 @@ import java.util.*;
 
 public class arraylist {
     public static void main(String[] args) {
-
         Locale[] locales = Locale.getAvailableLocales();
-        Locale objEnglish = new Locale("en", "US");
-        Locale objRussian = new Locale("ru", "RU");
+        Locale obj = new Locale("en", "US");
         ArrayList<String> countryNames = new ArrayList<>();
         for (Locale locale : locales) {
-            String countryEng = locale.getDisplayCountry(objEnglish);
-            String countryRus = locale.getDisplayCountry(objRussian);
-            if (countryEng.length() > 0 && !countryNames.contains(countryEng)) {
-                countryNames.add(countryEng);
-            }
-            if (countryRus.length() > 0 && !countryNames.contains(countryRus)) {
-                countryNames.add(countryRus);
+            String country = locale.getDisplayCountry(obj);
+            if (country.length() > 0 && !countryNames.contains(country)) {
+                countryNames.add(country);
             }
         }
+
         ArrayList<String> list = new ArrayList<>(5);
         list.add("Kazakhstan");
         list.add("Latvia");
@@ -36,17 +31,7 @@ public class arraylist {
         System.out.println("Please enter your country below: (enter 'stop' to exit):");
         while (!sc.hasNext("stop")) {
             String country = sc.nextLine();
-
-            if (countryNames.contains(country) && !list.contains(country)) {
-                for (int i = 0; i < list.size(); i++) {
-                    for (Locale locale : locales) {
-                        String countryEng = locale.getDisplayCountry(objEnglish);
-                        String countryRus = locale.getDisplayCountry(objRussian);
-                        if (list.get(i).equals(countryRus)) {
-                            list.set(i, countryEng);
-                        }
-                    }
-                }
+            if (countryNames.contains(country)) {
                 if (list.contains(country)) {
                     System.out.println("The country is already in the list");
                 } else {
@@ -57,27 +42,6 @@ public class arraylist {
                 System.out.println("Please enter a valid country name!");
             }
         }
-        sc.close();
-        System.out.println("ArrayList: " + list);
-
-        /*for (int i = 0; i < list.size(); i++) {
-            for (Locale locale : locales) {
-                String countryEng = locale.getDisplayCountry(objEnglish);
-                String countryRus = locale.getDisplayCountry(objRussian);
-                if (list.get(i).equals(countryRus)) {
-                    list.set(i, countryEng);
-                }
-            }
-        }*/
-
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = i + 1; j < list.size(); j++) {
-                if (list.get(i).equals(list.get(j))) {
-                    list.remove(j);
-                    j--;
-                }
-            }
-        }
 
         Collections.sort(list);
         System.out.println("Sorted ArrayList: " + list);
@@ -85,5 +49,22 @@ public class arraylist {
         for (String str : list) {
             System.out.println(str);
         }
+
+        ArrayList<Integer> population = new ArrayList<>();
+        Scanner sc2 = new Scanner(System.in);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("Please enter the population for " + list.get(i));
+            population.add(sc2.nextInt());
+        }
+        sc2.close();
+
+        ArrayList<ArrayList<String>> list2 = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            ArrayList<String> list3 = new ArrayList<>();
+            list3.add(list.get(i));
+            list3.add(population.get(i).toString());
+            list2.add(list3);
+        }
+        System.out.println(list2);
     }
 }
