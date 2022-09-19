@@ -1,3 +1,4 @@
+import com.google.gson.*;
 import java.net.*;
 import java.util.*;
 
@@ -60,30 +61,21 @@ public class Arraylist {
         codesList.addAll(lhs);
 
         for (int i = 0; i < codesList.size(); i++) {
-            String json = "";
             try {
                 URL url = new URL("https://jsonmock.hackerrank.com/api/countries/search?alpha2Code=" + codesList.get(i));
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.connect();
-                int responsecode = conn.getResponseCode();
-                if (responsecode != 200) {
-                    throw new RuntimeException("HttpResponseCode: " + responsecode);
-                } else {
-                    Scanner sc2 = new Scanner(url.openStream());
-                    while (sc2.hasNext()) {
-                        json += sc2.nextLine();
-                    }
-                    sc2.close();
+                Scanner scanner = new Scanner(url.openStream());
+                String result = "";
+                while (scanner.hasNext()) {
+                    result += scanner.nextLine();
                 }
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
+                JsonArray jsonArray = jsonObject.getAsJsonArray("data");
+                JsonObject data = jsonArray.get(0).getAsJsonObject();
+                String pop = data.get("population").getAsString();
+                population.add(pop);
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            String[] jsonSplit = json.split("population");
-
-            for (int j = 1; j < jsonSplit.length; j++) {
-                String[] jsonSplit2 = jsonSplit[j].split(",");
-                population.add(jsonSplit2[0].substring(2));
             }
         }
 

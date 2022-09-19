@@ -1,9 +1,8 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class countrylist {
     public static void main(String[] args) {
@@ -15,7 +14,6 @@ public class countrylist {
                 countryList.add(country);
             }
         }
-
         Collections.sort(countryList);
         for (String country : countryList) {
             System.out.println(country);
@@ -58,17 +56,35 @@ public class countrylist {
             }
         }
         System.out.println("Shortest country name: " + shortest);
-        // Create a JSON file with the country names
-        System.out.println("Creating JSON file...");
-        String json = "{ \"countries\": [";
-        for (String country : countryList) {
-            json += "\"" + country + "\",";
+
+
+        ArrayList<String> countryList2 = new ArrayList<String>();
+        ArrayList<String> population = new ArrayList<String>();
+        countryList2.add("Kazakhstan");
+
+        //get population of countries in countryList2 from API not using Country class
+        String url = "https://jsonmock.hackerrank.com/api/countries/search?name=";
+        for (String country : countryList2) {
+            String countryUrl = url + country;
+            try {
+                URL restCountries = new URL(countryUrl);
+                Scanner scanner = new Scanner(restCountries.openStream());
+                String result = "";
+                while (scanner.hasNext()) {
+                    result += scanner.nextLine();
+                }
+                scanner.close();
+                Gson gson = new Gson();
+                JsonObject jsonObject = gson.fromJson(result, JsonObject.class);
+                JsonArray jsonArray = jsonObject.getAsJsonArray("data");
+                JsonObject data = jsonArray.get(0).getAsJsonObject();
+                String pop = data.get("population").getAsString();
+                population.add(pop);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            System.out.println(population);
         }
-        json = json.substring(0, json.length() - 1);
-        json += "]}";
-        System.out.println(json);
-        System.out.println("JSON file created.");
-        //
 
     }
 }
