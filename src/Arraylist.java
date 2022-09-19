@@ -1,7 +1,7 @@
 import java.net.*;
 import java.util.*;
 
-public class arraylist {
+public class Arraylist {
     public static void main(String[] args) {
         Locale[] locales = Locale.getAvailableLocales();
         Locale obj = new Locale("en", "US");
@@ -96,23 +96,28 @@ public class arraylist {
 
         System.out.println("Choose how to sort the list: 1 - by country name, 2 - by population");
         Scanner sc3 = new Scanner(System.in);
-        int choice = sc3.nextInt();
-        sc3.close();
-        if (choice == 1) {
-            Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
-                public int compare(ArrayList<String> o1, ArrayList<String> o2) {
-                    return o1.get(0).compareTo(o2.get(0));
-                }
-            });
-        } else if (choice == 2) {
-            Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
-                public int compare(ArrayList<String> o1, ArrayList<String> o2) {
-                    return Integer.valueOf(o1.get(1)).compareTo(Integer.valueOf(o2.get(1)));
-                }
-            });
-        } else {
-            System.out.println("Please enter a valid choice!");
+        while (true) {
+            String choice = sc3.nextLine();
+            switch (choice) {
+                case "1":
+                    Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
+                        public int compare(ArrayList<String> o1, ArrayList<String> o2) {
+                            return o1.get(0).compareTo(o2.get(0));
+                        }
+                    });
+                    break;
+                case "2":
+                    Collections.sort(combinedList, new Comparator<ArrayList<String>>() {
+                        public int compare(ArrayList<String> o1, ArrayList<String> o2) {
+                            return Integer.valueOf(o1.get(1)).compareTo(Integer.valueOf(o2.get(1)));
+                        }
+                    });
+                    break;
+                default:
+                    System.out.println("Please enter a valid choice!");
+                    continue;
+            }
+            System.out.println(combinedList);
         }
-        System.out.println(combinedList);
     }
 }
