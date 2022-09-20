@@ -10,6 +10,7 @@ public class Burkani {
         weekdays.add("Piektdiena");
         weekdays.add("Sestdiena");
         weekdays.add("Svētdiena");
+
         Scanner sc = new Scanner(System.in);
         for (String str : weekdays) {
             System.out.print("Cik burkānu kilogramus piegādāti "+weekdays.get(weekdays.indexOf(str))+": ");
@@ -21,13 +22,14 @@ public class Burkani {
             System.out.println(str);
         }
 
+        System.out.println("1. Veikals kopīgi stradaja: " + weekdays.size()+" dienas");
         double sum = 0;
         for (String str : weekdays) {
             String[] parts = str.split(" ");
             String part2 = parts[1];
             sum += Double.parseDouble(part2);
         }
-        System.out.println("2. Kopā piegādāti "+sum+" burkānu kilogrami");
+        System.out.println("2. Kopā piegādāti "+String.format("%.3f",sum)+" burkānu kilogrami");
 
         double max = 0;
         double min = 0;
@@ -42,9 +44,9 @@ public class Burkani {
                 min = number;
             }
         }
-        System.out.println("3. Visvairāk piegādāts "+max+" un vismazāk piegādāts "+min+" burkānu kilogrami");
+        System.out.println("3. Visvairāk piegādāts "+String.format("%.3f",max)+" un vismazāk piegādāts "+String.format("%.3f",min)+" burkānu kilogrami");
         double average = sum / weekdays.size();
-        System.out.println("4. Vidēji piegādāti "+average+" burkānu kilogrami");
+        System.out.println("4. Vidēji piegādāti "+String.format("%.3f",average)+" burkānu kilogrami");
 
         int count = 0;
         for (String str : weekdays) {
@@ -60,9 +62,7 @@ public class Burkani {
             String[] parts = str.split(" ");
             String part2 = parts[1];
             double number = Double.parseDouble(part2);
-            if (number == 0) {
-                count2++;
-            }
+            count2 = (number == 0) ? count2 + 1 : count2;
         }
         System.out.println("6. "+count2+" dienas piegādāts 0 kilogrami");
 
