@@ -22,11 +22,13 @@ public class Burkani {
         System.out.println("2. Kopā piegādāts "+String.format("%.3f",sum)+" burkānu kilogrami");
 
         double max = 0;
-        double min = 0;
         for (String str : weekdays) {
             if (Double.parseDouble(str) > max) {
                 max = Double.parseDouble(str);
             }
+        }
+        double min = max;
+        for (String str : weekdays) {
             if (Double.parseDouble(str) < min) {
                 min = Double.parseDouble(str);
             }
